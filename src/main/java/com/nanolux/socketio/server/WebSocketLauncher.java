@@ -54,14 +54,12 @@ public class WebSocketLauncher {
 
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
-
 			@Override
 			public void run() {
 				SocketIONamespace namespace = server.getNamespace(Namespace.DEFAULT_NAME);
 				BroadcastOperations roomOperations = namespace.getRoomOperations("room");
 				roomOperations.sendEvent("chatevent", "currentTimeMillis==" + System.currentTimeMillis());
 			}
-
 		}, 5000, 2000);
 	}
 
