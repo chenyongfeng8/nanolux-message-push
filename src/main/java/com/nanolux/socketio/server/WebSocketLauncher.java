@@ -31,6 +31,7 @@ public class WebSocketLauncher {
 			public void onConnect(SocketIOClient client) {
 				String room = client.getHandshakeData().getSingleUrlParam("room");
 				client.joinRoom(room);
+				System.out.println(room);
 			}
 		});
 
