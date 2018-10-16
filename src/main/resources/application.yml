@@ -1,0 +1,6 @@
+server:
+  port: 1000
+wss: 
+  server: 
+    port: 8081
+    host: localhost
