@@ -31,13 +31,22 @@ public class WebSocketLauncher {
 			public void onConnect(SocketIOClient client) {
 				String room = client.getHandshakeData().getSingleUrlParam("room");
 				client.joinRoom(room);
+				System.out.println(room);
 			}
 		});
 
-		server.addEventListener("chatevent", WebSocketVO.class, new DataListener<WebSocketVO>() {
+		server.addEventListener("chatevent_server", WebSocketVO.class, new DataListener<WebSocketVO>() {
 			public void onData(SocketIOClient client, WebSocketVO data, AckRequest ackRequest) {
 				// broadcast messages to all clients
-				server.getBroadcastOperations().sendEvent("chatevent", data);
+				server.getBroadcastOperations().sendEvent("chatevent_server", data);
+//                client.sendEvent("chatevent", data);
+			}
+		});
+		
+		server.addEventListener("chatevent_client", String.class, new DataListener<String>() {
+			public void onData(SocketIOClient client, String data, AckRequest ackRequest) {
+				// broadcast messages to all clients
+				server.getBroadcastOperations().sendEvent("chatevent_server", data);
 //                client.sendEvent("chatevent", data);
 			}
 		});
@@ -51,17 +60,15 @@ public class WebSocketLauncher {
 
 		server.start();
 
-//		Timer timer = new Timer();
-//		timer.schedule(new TimerTask() {
-//
-//			@Override
-//			public void run() {
-//				SocketIONamespace namespace = server.getNamespace(Namespace.DEFAULT_NAME);
-//				BroadcastOperations roomOperations = namespace.getRoomOperations("room");
-//				roomOperations.sendEvent("chatevent", "currentTimeMillis==" + System.currentTimeMillis());
-//			}
-//
-//		}, 5000, 2000);
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				SocketIONamespace namespace = server.getNamespace(Namespace.DEFAULT_NAME);
+				BroadcastOperations roomOperations = namespace.getRoomOperations("room");
+				roomOperations.sendEvent("chatevent_client", "currentTimeMillis==" + System.currentTimeMillis());
+			}
+		}, 5000, 2000);
 	}
 
 }
